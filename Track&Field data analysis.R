@@ -1,68 +1,49 @@
 library(readxl)
-DECATHLON <- read_excel("C:/Users/leand/Downloads/DECATHLON.xlsx")
-View(DECATHLON)
+DECATHLON2 <- read_excel("C:/Users/leand/Downloads/DECATHLON2.xlsx")
+View(DECATHLON2)
+
+library(ggplot2)
 
 
-y=c(50,1,25,80,20)
-
-y=sort(y)
-y
-length(y)
-y[1]
-max(y)
-which(y==max(y))
 
 
-y=y[-which(y==max(y))]
-y
+
+ggplot(
+  DECATHLON2, aes(x=C100, y=C400, color=Club, group=Club)) +
+  geom_point() +
+  labs(title="Temps au 100m en fonction des temps au 400m",
+       x="Temps 100m",
+       y="Temps 400m") +
+  theme_dark() +
+  scale_color_manual(values=c("red","blue")) +
+  geom_smooth(method="lm")
+#On remaque qu'une des deux droite est fausée par une valeur extrème (tout à droite)
+#En course (100m et 400m), les Rennais sont globalement meilleur que les Parisiens
+#La qualité des entrainements sur ces disciplines doit etre meilleur à Rennes
 
 
-Liste_des_scores=c(DECATHLON$`Score`)
-Liste_des_scores
+
+ggplot(DECATHLON2, aes(x=C1500, fill=Club)) +
+  geom_histogram(binwidth = 10) +
+  facet_wrap(~Club)
+
+#Au 1500m, Les scores les scores des 10 meilleurs Rennais et des 10 meilleurs Parisiens sont homogènes (ils sont tous en dessous des 275sec) 
 
 
-Liste_des_grands_scores=DECATHLON$`Score`[DECATHLON$`Score`>8200]
-Liste_des_grands_scores
 
+ggplot(DECATHLON2) +
+  
+  aes(x = "", y = Score, fill = Club, colour = Age) +
+  
+  geom_violin(adjust = 1L, scale = "area") +
+  
+  scale_fill_hue(direction = 1) +
+  
+  scale_color_hue(direction = 1) +
+  
+  theme_minimal()
 
-Liste_valeursup8200=c(which(Liste_des_scores>8200))
-Liste_valeursup8200
-
-
-Ligne_grand_score=c(which(Liste_des_grands_scores==max(Liste_des_grands_scores)))
-Ligne_grand_score
-
-
-mean(DECATHLON$`Score`[DECATHLON$`Club`=='decaRennes'])
-sd(DECATHLON$`Score`[DECATHLON$`Club`=='decaRennes'])
-
-mean(DECATHLON$`Score`[DECATHLON$`Club`=='ParisII'])
-sd(DECATHLON$`Score`[DECATHLON$`Club`=='ParisII'])
-
-
-liste_ParisII_8000pts=c(DECATHLON$`Score`[DECATHLON$`Club`=='ParisII'& DECATHLON$`Score`>8000])
-liste_ParisII_8000pts
-length(liste_ParisII_8000pts)
-
-
-plot(DECATHLON$`Ljave`,DECATHLON$`Lpoids`)
-
-
-liste_score_sautperche=c(DECATHLON$`Sperch`)
-liste_score_sautperche
-liste_sauteur_nul=c(which(liste_score_sautperche==min(liste_score_sautperche)))
-liste_sauteur_nul
-
-
-DECATHLON$`Club`[DECATHLON$`Sperch`==min(liste_score_sautperche)]
-
-DECATHLON=DECATHLON[-which(liste_score_sautperche==min(liste_score_sautperche)),]
-
-DECATHLON_ordrecroiss_score <- DECATHLON[order(DECATHLON$`Score`),]
-DECATHLON_ordrecroiss_score
-
-boxplot(DECATHLON$`Score`[DECATHLON$`Club`=='decaRennes'])
-
-table(DECATHLON$`Club`)
-
-table(DECATHLON$`Club`,DECATHLON$`Age`)
+#Les scores des U17 Rennais sont plus hétérogène que les scores des U17 Parisiens
+#Les scores des U19 Parisiens sont plus hétérogène que les scores des U19 Rennais
+#L'ecart de niveau entre les U17 et les U19 Rennais est abyssable
+#Les U17 et les U19 Parisiens ont globalement le meme niveau
